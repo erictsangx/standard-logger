@@ -1,3 +1,6 @@
+Properties props = new Properties()
+props.load(new FileInputStream("./bintray.properties"))
+
 group = 'com.etx.logger'
 version = "1.0.0"
 
@@ -5,22 +8,28 @@ buildscript {
     ext.kotlin_version = '1.0.3'
 
     repositories {
+        jcenter()
         mavenCentral()
     }
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.1'
     }
 }
 
 apply plugin: 'java'
 apply plugin: 'kotlin'
+apply plugin: 'idea'
+apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
 sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 repositories {
+    jcenter()
     mavenCentral()
     maven {
         url "http://repository.jetbrains.com/spek"
@@ -68,4 +77,29 @@ task javadocJar(type: Jar) {
 
 artifacts {
     archives sourcesJar, javadocJar
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            groupId project.group
+            artifactId project.name
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+}
+
+bintray {
+    user = props.get('bintray_user')
+    key = props.get('bintray_key')
+    publications = ['mavenJava']
+    pkg {
+        repo = 'maven'
+        name = project.name
+        version {
+            name = project.version
+        }
+    }
 }

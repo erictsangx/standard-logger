@@ -3,6 +3,16 @@ A wrapper of slf4j using kotlin and lambda.
 - Log objects -> toString()
 - Log exceptions -> Stacktrace
 
+####gradle:
+```gradle
+repositories {
+    jcenter()
+}
+dependencies {
+    compile 'com.etx.logger:standard-logger:1.0.0'
+}
+```
+####usage:
 ```kotlin
 class Foo {
     companion object {
